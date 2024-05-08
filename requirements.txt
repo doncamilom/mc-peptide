@@ -1,0 +1,10 @@
+groq
+fastapi
+python-dotenv
+transformers
+sentencepiece
+protobuf
+torch
+llama-index
+llama-index-embeddings-openai
+
