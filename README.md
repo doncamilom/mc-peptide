@@ -13,6 +13,7 @@
 
 <br>
 
+Gather, modify, and model MacroCyclic Peptide data with LLMs!
 
 
 ## 🔥 Usage
