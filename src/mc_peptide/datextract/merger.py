@@ -3,6 +3,7 @@
 from typing import List
 
 from pydantic import BaseModel, Field
+from typing import Optional
 
 from .signatures import Compound, CompoundList, CompoundProps, PropsList
 
@@ -15,7 +16,7 @@ class CompoundWithProps(BaseModel):
     )
     sequence: str = Field(desc="Amino acid sequence of the peptide.")
     name: str = Field(desc="Name of the peptide.")
-    permeability: float = Field(
+    permeability: Optional[float] = Field(
         desc="Permeability of the peptide. Reported as logPe, or PAMPA values."
     )
     units: str = Field(desc="What units are used to report the permeability.")
@@ -23,10 +24,14 @@ class CompoundWithProps(BaseModel):
     @classmethod
     def from_compound_and_props(cls, compound: Compound, props: CompoundProps):
         """Create a compound with properties."""
-        final_dict = compound.dict()
-        final_dict.update(props.dict())
-
-        return cls(**final_dict)
+        fdict = {
+            "reference_key": compound.reference_key if compound else props.reference_key,
+            "sequence": compound.sequence if compound else "",
+            "name": compound.name if compound else "",
+            "permeability": props.permeability if props else -99,
+            "units": props.units if props else "",
+        }
+        return cls(**fdict)
 
 
 class CompoundWithPropsList(BaseModel):
@@ -42,10 +47,10 @@ class CompoundWithPropsList(BaseModel):
         cls, compounds: CompoundList, props: PropsList, paper: str
     ):
         """Create a list of compounds with properties."""
-        keys = [c.reference_key for c in compounds.compounds.compounds]
         kcomp = {c.reference_key: c for c in compounds.compounds.compounds}
-        kprops = {p.reference_key: p for p in props.compounds.compounds}
+        kprops = {p.reference_key: p for p in props.comp_properties.compounds}
 
+        keys = set(kcomp.keys()) | set(kprops.keys())
         return cls(
             paper=paper,
             compounds=[
