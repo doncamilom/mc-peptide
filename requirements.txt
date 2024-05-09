@@ -7,4 +7,4 @@ protobuf
 torch
 llama-index
 llama-index-embeddings-openai
-
+chromadb
