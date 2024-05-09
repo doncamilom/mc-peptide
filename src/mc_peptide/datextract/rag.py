@@ -17,7 +17,7 @@ class RAGMultiHop(dspy.Module):
         ]
 
         documents = SimpleDirectoryReader(dir_path).load_data()
-        index = VectorStoreIndex.from_documents(documents).as_retriever(choice_batch_size=5)
+        index = VectorStoreIndex.from_documents(documents).as_retriever(choice_batch_size=8)
         self.query = index.retrieve
         self.compounds = dspy.TypedPredictor(CompoundsRAG)
 
@@ -52,7 +52,7 @@ class RAGMultiHopProp(dspy.Module):
         ]
 
         documents = SimpleDirectoryReader(dir_path).load_data()
-        index = VectorStoreIndex.from_documents(documents).as_retriever(similarity_top_k=2)
+        index = VectorStoreIndex.from_documents(documents).as_retriever(similarity_top_k=5)
         self.query = index.retrieve
         self.compounds = dspy.TypedPredictor(CompoundsPropRAG)
 
