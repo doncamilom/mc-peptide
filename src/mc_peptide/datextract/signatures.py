@@ -20,28 +20,25 @@ class Compound(BaseModel):
 
 
 class CompoundList(BaseModel):
-    """List of compounds."""
+    """List of peptides."""
 
     compounds: List[Compound] = Field(desc="List of compounds.")
 
 
 class CompoundProps(BaseModel):
-    """Peptide compound properties."""
+    """A peptide compound with properties like permeability."""
 
     reference_key: str = Field(
         desc="Number with which peptide is referenced in the paper."
     )
-    permeability: float = Field(
-        desc="Permeability of the peptide. Reported as logPe."
+    permeability: Optional[float] = Field(
+        desc="Permeability of the peptide. Reported as logPe or PAMPA."
     )
     units: str = Field(desc="What units are used to report the permeability.")
-    method: Optional[str] = Field(
-        desc="Method used to measure the permeability."
-    )
 
 
 class PropsList(BaseModel):
-    """List of compounds."""
+    """List of compounds with properties."""
 
     compounds: List[CompoundProps] = Field(desc="List of compounds.")
 
@@ -59,8 +56,8 @@ class CompoundsPropRAG(dspy.Signature):
     """Retreive compounds synthesized in a paper."""
 
     context = dspy.InputField(desc="Relevant context for the question.")
-    compounds: PropsList = dspy.OutputField(
-        desc="Return the compounds synthesized in this paper."
+    comp_properties: PropsList = dspy.OutputField(
+        desc="Properties for the peptides reported in this paper."
     )
 
 

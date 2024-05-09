@@ -17,7 +17,7 @@ class RAGMultiHop(dspy.Module):
         ]
 
         documents = SimpleDirectoryReader(dir_path).load_data()
-        index = VectorStoreIndex.from_documents(documents).as_retriever()
+        index = VectorStoreIndex.from_documents(documents).as_retriever(choice_batch_size=5)
         self.query = index.retrieve
         self.compounds = dspy.TypedPredictor(CompoundsRAG)
 
@@ -52,7 +52,7 @@ class RAGMultiHopProp(dspy.Module):
         ]
 
         documents = SimpleDirectoryReader(dir_path).load_data()
-        index = VectorStoreIndex.from_documents(documents).as_retriever()
+        index = VectorStoreIndex.from_documents(documents).as_retriever(similarity_top_k=2)
         self.query = index.retrieve
         self.compounds = dspy.TypedPredictor(CompoundsPropRAG)
 
@@ -63,7 +63,8 @@ class RAGMultiHopProp(dspy.Module):
 
         for hop in range(self.max_hops):
             query = self.generate_query[hop](
-                context=context, question=question
+                context=context,
+                question=question
             ).query
             print(query)
             passages = [p.text for p in self.query(query)]
